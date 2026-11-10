@@ -1,0 +1,25 @@
+# game assets, third-party motions and build output never go to GitHub
+source/
+fbx/
+export/
+stage/
+dist/
+blender/*.blend*
+blender/*.png
+ue/SubverseDance/Saved/
+ue/SubverseDance/Intermediate/
+ue/SubverseDance/Content/
+ue/SubverseDance/DerivedDataCache/
+ue/SubverseDance/Build/
+ue/*.log
+tools/umodel/
+tools/all.txt
+*.log
+*.done
+__pycache__/
+blender/vmd/preview_*/
+batch*.sh
+rebuild_after.sh
+ghost_after.sh
+blender/debug*.py
+blender/inspect.py

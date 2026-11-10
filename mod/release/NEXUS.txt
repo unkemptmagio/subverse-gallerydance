@@ -1,0 +1,56 @@
+NAME: GalleryDance
+SUMMARY: Looping dances for all 11 Gallery heroines, picked from an in-game panel (F7) with speed control. Physics stays on.
+CATEGORY: Animations   |  ADULT: yes  |  AI-GENERATED: ticked (like BodySlider/FreeCam)
+REQUIREMENTS: UE4SS v3.0.1
+PERMISSIONS: no Donation Points for this file (Patrik and Ghost Dance terms forbid commercial use)
+
+---- DESCRIPTION (BBCode) ----
+[size=5][b]GalleryDance[/b][/size]
+Makes the Gallery heroines dance. Open the Gallery, press [b]F7[/b], click a dance, and it loops with hair and breast physics still on.
+
+[b]Dances[/b] (on Blythe, Celestina, DEMI, Elaisha, Fortune, FowChan, Huntress, Killi, Lily, Sova, Taron)
+[list]
+[*]Twerk
+[*]Belly Dance
+[*]Bellydancing
+[*]Dancing
+[*]Addiction
+[*]Patrik and The Small Guy
+[*]Helltaker
+[*]Ghost Dance
+[/list]
+
+[b]Panel[/b]
+[list]
+[*]Click a dance to loop it
+[*]SPEED 0.5 / 1 / 1.5 / 2
+[*]STOP: back to the pose selected in the Gallery menu
+[*]F7 or CLOSE: hide the panel
+[/list]
+
+[b]Requirements[/b]
+[url=https://github.com/UE4SS-RE/RE-UE4SS/releases]UE4SS v3.0.1[/url] in Subverse\Subverse\Binaries\Win64
+
+[b]Install[/b]
+Extract the zip into the game folder (the one with Subverse.exe), merging folders.
+Uninstall: delete ue4ss\Mods\GalleryDance and Content\Paks\~mods\GalleryDance_P.pak.
+
+[b]Known issues[/b]
+[list]
+[*]Killi floats a little above the platform in some dances.
+[*]Patrik ends in a crouch, so there is a small jump when it loops (about every 3 minutes).
+[/list]
+
+[b]Compatibility[/b]
+Tested on GOG v1.2 with the Celestina DLC. Doesn't change any game files. Pairs well with [url=https://www.nexusmods.com/subverse/mods/25]BodySlider[/url] and [url=https://www.nexusmods.com/subverse/mods/26]FreeCam[/url].
+
+[b]Credits[/b]
+[list]
+[*]Mixamo (Adobe): Twerk, Belly Dance, Bellydancing, Dancing
+[*]炎道: Patrik and The Small Guy (腰振りダンス)
+[*]piconano-femto, after akomni: Ghost Dance (がに股GhostDance). Modified (retargeted) for this mod; the readme is included.
+[*]hanamaru (iwara @hana0822): shared the MMD motion downloads
+[/list]
+The motions are for non-commercial use only. Full terms are in CREDITS.txt.
+
+Source code (MIT): [url=https://github.com/unkemptmagio/subverse-gallerydance]github.com/unkemptmagio/subverse-gallerydance[/url]

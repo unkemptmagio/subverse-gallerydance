@@ -1,0 +1,25 @@
+GalleryDance - motion credits
+=============================
+
+All dances were retargeted (modified) from their original skeletons onto each
+Subverse heroine. No original motion files are included.
+
+Twerk, Belly Dance, Bellydancing, Dancing
+  Mixamo (Adobe) - https://www.mixamo.com
+
+Patrik and The Small Guy (腰振りダンス)
+  Original motion: 炎道
+  Terms: modification OK, redistribution OK, commercial use NOT allowed.
+
+Ghost Dance (がに股GhostDance v1.0)
+  (c)2022 piconano-femto, a modified version of Ghost dance by akomni (@akomni)
+  Terms: modified redistribution OK if marked as modified and the readme is included
+  (credits\GhostDance_readme.txt). Commercial use NOT allowed.
+  This mod modifies it: retargeted to the Subverse skeletons.
+
+Addiction, Helltaker-style dance (ガリ股腰振り Helltaker モーション)
+  MMD motions shared for free download.
+
+MMD motion downloads shared by hanamaru (iwara.tv @hana0822).
+
+Mod by unkemptmagio. Code: MIT, https://github.com/unkemptmagio/subverse-gallerydance
