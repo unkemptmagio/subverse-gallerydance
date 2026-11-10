@@ -3,7 +3,9 @@
 import bpy, sys, json, os
 from mathutils import Matrix, Vector, Quaternion
 
-W, CHAR, SRC, OUT = sys.argv[sys.argv.index('--') + 1:][:4]
+ARGS = sys.argv[sys.argv.index('--') + 1:]
+W, CHAR, SRC, OUT = ARGS[:4]
+MIRROR = ARGS[4:5] == ['mirror']  # left/right swapped copy of the dance
 C = json.load(open(W + f'/export/{CHAR}/char.json'))
 
 
@@ -91,7 +93,11 @@ S.rotation_mode = 'QUATERNION'
 S.rotation_quaternion = fs.rotation_difference(ft) @ S.rotation_quaternion
 bpy.context.view_layer.update()
 pairs = {MAP[k]: pre + k for k in MAP if pre + k in S.data.bones and MAP[k] in arm.bones}
-print('mapped bones', len(pairs), 'facing turn deg', round(fs.angle(ft) * 57.3, 1))
+print('mapped bones', len(pairs), 'facing turn deg', round(fs.angle(ft) * 57.3, 1), 'MIRROR' if MIRROR else '')
+# mirror: bone X follows what its opposite-side source bone did, reflected across the heroine's mid plane
+LAT = ft.cross(Vector((0, 0, 1))).normalized()
+FM = Matrix.Identity(3) - 2 * Matrix([[a * b for b in LAT] for a in LAT])
+opp = lambda n: n.replace('Left', '#').replace('Right', 'Left').replace('#', 'Right') if MIRROR else n
 
 act = S.animation_data.action
 f0, f1 = int(act.frame_range[0]), int(act.frame_range[1])
@@ -146,9 +152,14 @@ def bake(ankle):
             rel = (b.parent.matrix_local.inverted() @ b.matrix_local) if b.parent else b.matrix_local
             base = P @ rel
             if n in pairs:
-                Ws = S.matrix_world @ S.pose.bones[pairs[n]].matrix
-                rot = Ws.to_3x3().normalized() @ Srest[pairs[n]].to_3x3().normalized().inverted() @ Tm[n]
-                loc = ((Ws.translation - C0) * k + Vector((0, 0, ankle))) if n == 'Biped_Pelvis' else base.translation
+                src = opp(pairs[n])
+                Ws = S.matrix_world @ S.pose.bones[src].matrix
+                d = Ws.to_3x3().normalized() @ Srest[src].to_3x3().normalized().inverted()
+                hip = Ws.translation - C0
+                if MIRROR:
+                    d, hip = FM @ d @ FM, FM @ hip
+                rot = d @ Tm[n]
+                loc = (hip * k + Vector((0, 0, ankle))) if n == 'Biped_Pelvis' else base.translation
                 want = Matrix.Translation(loc) @ rot.to_4x4()
                 pb = T.pose.bones[n]
                 pb.rotation_mode = 'QUATERNION'
@@ -176,12 +187,20 @@ def shift(dz):  # same result as re-baking with ankle+dz: only the pelvis locati
             fc.update()
 
 
-def lowest():  # lowest mesh vertex (m) over the clip, sampled every 10 frames
+# ground on the body only: tails, hair, cloth and accessories are physics in-game but rigid here, and a hanging
+# tail tip lifted Killi up to 80 cm in the MMD dances
+_gn = {g.index: g.name for g in mesh.vertex_groups}
+BODY = [v.index for v in mesh.data.vertices
+        if v.groups and _gn[max(v.groups, key=lambda g: g.weight).group].startswith(('Biped_', 'Helper_Skin'))]
+
+
+def lowest():  # lowest body vertex (m) over the clip, sampled every 10 frames
     lo = 1e9
     for f in range(f0, f1 + 1, 10):
         scn.frame_set(f)
         me = mesh.evaluated_get(bpy.context.evaluated_depsgraph_get()).to_mesh()
-        lo = min(lo, min(v.co.z for v in me.vertices))
+        vs = me.vertices
+        lo = min(lo, min(vs[i].co.z for i in BODY))
     return lo
 
 

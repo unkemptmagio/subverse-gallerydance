@@ -24,7 +24,9 @@ Makes the Gallery heroines dance. Open the Gallery, press [b]F7[/b], click a dan
 [list]
 [*]Click a dance to loop it
 [*]SPEED 0.5 / 1 / 1.5 / 2
+[*]MIRROR: play every dance left-right flipped
 [*]STOP: back to the pose selected in the Gallery menu
+[*]F10: hide the panel for screenshots
 [*]F7 or CLOSE: hide the panel
 [/list]
 
@@ -33,11 +35,11 @@ Makes the Gallery heroines dance. Open the Gallery, press [b]F7[/b], click a dan
 
 [b]Install[/b]
 Extract the zip into the game folder (the one with Subverse.exe), merging folders.
+Updating from 1.0: overwrite the files.
 Uninstall: delete ue4ss\Mods\GalleryDance and Content\Paks\~mods\GalleryDance_P.pak.
 
 [b]Known issues[/b]
 [list]
-[*]Killi floats a little above the platform in some dances.
 [*]Patrik ends in a crouch, so there is a small jump when it loops (about every 3 minutes).
 [/list]
 

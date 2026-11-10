@@ -11,6 +11,9 @@ ue/SubverseDance/Intermediate/
 ue/SubverseDance/Content/
 ue/SubverseDance/DerivedDataCache/
 ue/SubverseDance/Build/
+ue/SubverseDance2/
+ue/SubverseDance3/
+log/
 ue/*.log
 tools/umodel/
 tools/all.txt

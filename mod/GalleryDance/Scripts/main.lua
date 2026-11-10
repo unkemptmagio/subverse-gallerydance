@@ -1,4 +1,5 @@
--- GalleryDance: loop dances on the gallery heroine, picked from an in-game panel (F7), with speed control.
+-- GalleryDance: loop dances on the gallery heroine, picked from an in-game panel (F7), with speed control and mirror.
+-- F10 hides the panel (screenshots), like FreeCam's hide-UI key.
 -- Dances are cooked AnimSequences in Paks\~mods\GalleryDance_P.pak, listed in ..\dances.txt (written by the build).
 -- How it plays them: the gallery anim BP (<Name>GalleryAnimBlueprint_C) feeds its variable `AnimSequence` into a
 -- SequencePlayer, so swapping that variable loops our clip with the game's physics and bone tweaks intact.
@@ -9,15 +10,19 @@ local function name(o) local ok, s = pcall(function() return o:GetFullName() end
 local MOD_DIR = debug.getinfo(1, "S").source:match("^@(.*)[/\\]Scripts[/\\]")
 local SPEEDS = { 0.5, 1.0, 1.5, 2.0 }
 local TOGGLE_KEY = Key.F7
+local HIDE_KEY = Key.F10
 
 ---------------------------------------------------------------- dance catalog
 local DANCES = {}  -- lower-case character -> { {path=, label=}, ... }
+local MIRRORED = {}  -- dance path -> true when its left/right swapped copy "<path>_M" exists
 local function loadCatalog()
     local f = io.open(MOD_DIR .. "\\dances.txt", "r")
     if not f then log("dances.txt missing"); return end
     for line in f:lines() do
         local char, short = line:match("^/Game/Mods/GalleryDance/([^/]+)/A_[^_]+_Dance_(.+)$")
-        if char then
+        if char and short:sub(-2) == "_M" then
+            MIRRORED[line:sub(1, -3)] = true
+        elseif char then
             local key = char:lower()
             DANCES[key] = DANCES[key] or {}
             local label = short:gsub("(%l)(%u)", "%1 %2"):upper()  -- BellyDance -> BELLY DANCE
@@ -71,13 +76,15 @@ end
 -- per heroine (by component address): menu pose to return to, and what we're playing
 local state = {}
 local speed = 1.0
+local mirror = false
+local hidden = false  -- F10
 
 local function physPath(o) return name(o):match("^PhysicsAsset (/[^%.]+)") end
 local REINIT_TICKS = 1  -- polls (150 ms each): let the new clip pose the bones first, then rebuild the bodies there
 local tick = 0
 
 local function play(c, ai, path)
-    local a = load(path)
+    local a = load((mirror and MIRRORED[path]) and path .. "_M" or path)
     if not isSeq(a) then log("could not load " .. path); return end
     local st = state[c:GetAddress()]
     ai.AnimSequence = a
@@ -225,8 +232,10 @@ local function buildUI(char, list)
         ui.speeds[i] = { cb = button(tree, canvas, white, font, string.format("%gx", s), x0 + PAD + (i - 1) * (sw + 8), y, sw, 34), v = s }
     end
     y = y + 34 + 20
-    ui.stop  = button(tree, canvas, white, font, "STOP",  x0 + PAD, y, 120, 34)
-    ui.close = button(tree, canvas, white, font, "CLOSE", x0 + BW - PAD - 120, y, 120, 34)
+    local fw = math.floor((BW - 2 * PAD - 2 * 10) / 3)
+    ui.stop   = button(tree, canvas, white, font, "STOP",   x0 + PAD, y, fw, 34)
+    ui.mirror = button(tree, canvas, white, font, "MIRROR", x0 + PAD + fw + 10, y, fw, 34)
+    ui.close  = button(tree, canvas, white, font, "CLOSE",  x0 + BW - PAD - fw, y, fw, 34)
 
     host:AddToViewport(50)
     ui.host, ui.char = host, char
@@ -256,7 +265,7 @@ local function poll()
 
     local char = charOf(c)
     local list = DANCES[char:lower()] or {}
-    if not panelOn then
+    if not panelOn or hidden then
         if valid(ui.host) then ui.host:SetVisibility(1) end
         return
     end
@@ -270,6 +279,7 @@ local function poll()
     -- then act once (acting inside the loop made the still-lit buttons read as clicks too).
     if ui.close:IsChecked() then ui.close:SetIsChecked(false); panelOn = false; ui.host:SetVisibility(1); return end
     local stopClick = ui.stop:IsChecked()
+    local mirrorClick = ui.mirror:IsChecked() ~= mirror
     local newSpeed
     for _, s in ipairs(ui.speeds) do
         if s.cb:IsChecked() ~= (speed == s.v) and s.v ~= speed then newSpeed = s.v end
@@ -285,17 +295,22 @@ local function poll()
         speed = newSpeed
         if st.playing then pcall(function() c.GlobalAnimRateScale = speed end) end
     end
+    if mirrorClick then mirror = not mirror end
     if stopClick or (unpick and not pick) then
         if st.playing then stop(c, ai) end
     elseif pick then
         play(c, ai, pick)
+    elseif mirrorClick and st.playing then
+        play(c, ai, st.playing)  -- swap to the other side's copy of the same dance
     end
     -- show the current state
     for _, s in ipairs(ui.speeds) do s.cb:SetIsChecked(speed == s.v) end
+    ui.mirror:SetIsChecked(mirror)
     for _, d in ipairs(ui.dances) do d.cb:SetIsChecked(st.playing == d.path) end
 end
 
-RegisterKeyBind(TOGGLE_KEY, function() panelOn = not panelOn end)
+RegisterKeyBind(TOGGLE_KEY, function() panelOn = not panelOn; hidden = false end)
+RegisterKeyBind(HIDE_KEY, function() hidden = not hidden end)
 
 local lastErr
 LoopInGameThreadWithDelay(150, function()

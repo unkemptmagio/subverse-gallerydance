@@ -1,4 +1,4 @@
-GalleryDance for Subverse - looping dances for the heroines in the Gallery
+GalleryDance for Subverse v1.1 - looping dances for the heroines in the Gallery
 =========================================================================
 
 REQUIRES
@@ -7,7 +7,7 @@ REQUIRES
 
 INSTALL
   Extract the zip into your Subverse game folder (the one with Subverse.exe),
-  merging folders. You end up with:
+  merging folders. Updating from 1.0: overwrite the files. You end up with:
     Subverse\Content\Paks\~mods\GalleryDance_P.pak
     Subverse\Binaries\Win64\ue4ss\Mods\GalleryDance\Scripts\main.lua
 
@@ -15,7 +15,9 @@ USE
   Open the Gallery, pick a heroine, press F7.
   The panel lists her dances. Click one to play it on a loop.
   SPEED 0.5 / 1 / 1.5 / 2     playback speed
+  MIRROR                      play every dance left-right flipped (toggle)
   STOP                        back to the pose selected in the Gallery menu
+  F10                         hide the panel for screenshots
   CLOSE or F7                 hide the panel
 
   Physics (hair, breasts) stays on and resets on every switch.
@@ -27,7 +29,6 @@ UNINSTALL
   Delete the GalleryDance folder and GalleryDance_P.pak. No game files are changed.
 
 KNOWN ISSUES
-  Killi floats a little above the platform in some dances.
   Patrik ends in a crouch, so there is a small jump when it loops (about every 3 minutes).
 
 NOTES

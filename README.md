@@ -14,7 +14,7 @@ Download the zip from [Releases](../../releases) and extract it into the game fo
 - `Subverse\Binaries\Win64\ue4ss\Mods\GalleryDance\` (the panel)
 
 ## Use
-In the Gallery, press **F7**. Click a dance to loop it. Speed 0.5 / 1 / 1.5 / 2. **STOP** returns to the pose selected in the Gallery menu.
+In the Gallery, press **F7**. Click a dance to loop it. Speed 0.5 / 1 / 1.5 / 2. **MIRROR** plays every dance left-right flipped. **STOP** returns to the pose selected in the Gallery menu. **F10** hides the panel for screenshots (same key as FreeCam and BodySlider).
 
 Dances: Twerk, Belly Dance, Bellydancing, Dancing, Addiction, Patrik, Helltaker, Ghost Dance. They're available on Blythe, Celestina, DEMI, Elaisha, Fortune, FowChan, Huntress, Killi, Lily, Sova and Taron.
 
@@ -24,16 +24,21 @@ Each heroine's gallery AnimBP (`<Name>GalleryAnimBlueprint_C`) feeds its `AnimSe
 The clips are built offline, one command per clip:
 
 ```
-python tools/prep_char.py <Heroine>                         # once per heroine: skeleton, rest pose, gallery mesh from the paks
-./build.sh <Heroine> "source/<dance>.fbx" A_<Heroine>_Dance_<Name>
+python tools/prep_char.py <Heroine>   # once per heroine: skeleton, rest pose, gallery mesh from the paks
+./build.sh <Heroine> [Dance ...]      # Dance = source/<Dance>.fbx; default: all. Builds normal + mirrored (_M) clips
+./build.sh all [Dance ...]            # every heroine, two at a time
+./build.sh pak                        # re-pak and install
 ```
+
+To add a dance, drop its FBX in `source/` and run `./build.sh all`. `./release.sh <version>` builds the release zip.
 
 `build.sh` works in four steps:
 1. **Retarget in Blender** (`blender/retarget.py`):
    - matches world rotations, Mixamo bones to 3ds Max Biped;
    - scales hip motion by leg length;
    - centers the dance on the platform;
-   - grounds the feet on the lowest mesh vertex.
+   - grounds the feet on the lowest body vertex (tails, hair and cloth are ignored);
+   - `mirror` reflects every bone onto its opposite side for the `_M` clip.
 2. **Import and cook in UE 4.22** (`ue/`), unversioned.
 3. **Check the rest pose** against the gallery mesh with UModel.
 4. **Remap and pack:** remaps the track tables to the game's bone order (`tools/remap_tracks.py`), then paks everything with UnrealPak.
@@ -43,7 +48,6 @@ MMD `.vmd` motions convert to a Mixamo-style FBX first with `blender/vmd/vmd2fbx
 Game assets, motion sources and built clips aren't in this repo.
 
 ## Known issues
-- Killi floats a little above the platform in some dances.
 - Patrik ends in a crouch, so there is a small jump when it loops (about every 3 minutes).
 
 ## Notes
