@@ -2,7 +2,7 @@
 
 Looping dances for every Gallery heroine, picked from an in-game panel, with physics kept on.
 
-Nexus Mods: *link coming soon*
+Nexus Mods: https://www.nexusmods.com/subverse/mods/27
 
 ## Requirements
 - Subverse (tested on GOG v1.2 + Celestina DLC)
